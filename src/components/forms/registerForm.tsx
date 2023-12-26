@@ -2,17 +2,22 @@
 import * as React from 'react';
 import Button from '@/components/ui/button';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import GoogleButton from '../ui/googleButton';
-import { FieldErrors, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import ErrorMessage from './errorMessage';
 import useMutation from '@/app/lib/client/useMutation';
+import { useState } from 'react';
 
 interface RegisterForm {
   name?: string;
   email: string;
   password: string;
   confirmPassword: string;
+}
+
+interface MutationResult {
+  ok: boolean;
 }
 
 export default   function RegisterForm() {
@@ -23,70 +28,32 @@ export default   function RegisterForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterForm>({ mode: 'onBlur' });
-
-  const [signUp, {loading, data, error}] = useMutation('/api/users/register');
-  const onValid = (validForm: RegisterForm) => {
-    console.log('working');
-    signUp(validForm);
+  const [serverError, setServerError] = useState('');
+  const [enter, {loading, data, error}] = useMutation<MutationResult>('/api/register');
+  const onValid = async (validForm: RegisterForm) => {
+    // enter(validForm);
+    fetch('/api/register', {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(validForm)
+    })
+    .then((res) => res.json())
+    .then((res) => router.push(`/account/${res.user.id}`))
+    .catch((err) => {
+      setServerError(err.message);
+    })
   };
-  console.log(loading, data, error);
-
-  const onInvalid = (errors: FieldErrors) => {
  
- 
-  };
-
   return (
     <div className="p-8 bg-gray-100 rounded-sm flex flex-col items-center">
-      {/* <form onSubmit={handleSubmit(onValid, onInvalid)}>
-        <input
-          {...register('name', {
-            required: 'Username is required',
-            minLength: {
-              message: 'The username should be longer than 5 chars.',
-              value: 5,
-            },
-          })}
-          type="text"
-          placeholder="Username"
-        />
-        <input
-          {...register('email', {
-            required: 'Email is required',
-            validate: {
-              notGmail: (value) =>
-                !value.includes('@gmail.com') || 'Gmail is not allowed',
-            },
-          })}
-          type="email"
-          placeholder="Email"
-        />
-        {errors.email?.message}
-        <input
-          {...register('password', { required: 'Password is required' })}
-          type="password"
-          placeholder="Password"
-        />
-        <input
-          {...register('confirmPassword', {
-            required: 'Please confirm password.',
-            validate: {
-              notMatch: (val: string) =>
-                watch('password') != val ? 'Not match' : '',
-            },
-          })}
-          type="password"
-          placeholder="Confirm Password"
-        />
-        <input type="submit" value="Create Account" />
-      </form> */}
+      {serverError != "" && <ErrorMessage message={serverError} />}
       <form
-        onSubmit={handleSubmit(onValid, onInvalid)}
-        method="POST"
+        onSubmit={handleSubmit(onValid)}
         className="w-full flex flex-col gap-2"
       >
         <div className="w-full mb-2">
-          {/* <label className="font-semibold text-sm mb-3">Username</label> */}
           <input
             {...register('name', {
               required: 'Username is required',
@@ -105,13 +72,12 @@ export default   function RegisterForm() {
         </div>
 
         <div className="w-full mb-2">
-          {/* <label className="font-semibold text-sm mb-3">Email</label> */}
           <input
             {...register('email', {
               required: 'Email is required',
               validate: {
-                notGmail: (value) =>
-                  !value.includes('@gmail.com') || 'Gmail is not allowed',
+                notEmail: (value) =>
+                   value.includes('@')  || 'Please enter a valid email.',
               },
             })}
             type="email"
@@ -119,11 +85,10 @@ export default   function RegisterForm() {
             className="rounded border border-gray-200 focus:outline-none focus:ring-0 w-full py-2 px-2 bg-white active:bg-white text-sm focus:bg-white focus:border-purple-400 focus:border-2"
           />
           {errors.email ? (
-            <ErrorMessage message={errors.email.message || ''} />
+            <ErrorMessage message={errors.email?.message || ''} />
           ) : null}
         </div>
         <div className="w-full mb-2">
-          {/* <label className="font-semibold text-sm mb-3">Email</label> */}
           <input
             {...register('password', {
               required: 'Please set your password.',
@@ -146,7 +111,6 @@ export default   function RegisterForm() {
           ) : null}
         </div>
         <div className="w-full mb-2">
-          {/* <label className="font-semibold text-sm mb-3">Email</label> */}
           <input
             {...register('confirmPassword', {
               validate: {

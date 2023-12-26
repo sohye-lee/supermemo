@@ -10,8 +10,8 @@ interface HeroProps {
 
 export default function Hero(props: HeroProps) {
   return (
-    <div className="relative w-full h-48 flex flex-col items-center justify-center overflow-hidden">
-      <h1 className="text-3xl font-medium z-10">{props.title}</h1>
+    <div className="relative w-full h-36 flex flex-col items-center justify-center overflow-hidden">
+      <h1 className="text-2xl font-medium z-10">{props.title}</h1>
       {props.description ? (
         <p className="mt-3 text-slate-600">{props.description}</p>
       ) : null}
