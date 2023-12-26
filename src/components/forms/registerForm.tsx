@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import GoogleButton from '../ui/googleButton';
 import { FieldErrors, useForm } from 'react-hook-form';
 import ErrorMessage from './errorMessage';
+import useMutation from '@/app/lib/client/useMutation';
 
 interface RegisterForm {
   name?: string;
@@ -14,7 +15,7 @@ interface RegisterForm {
   confirmPassword: string;
 }
 
-export default function RegisterForm() {
+export default   function RegisterForm() {
   const router = useRouter();
   const {
     register,
@@ -22,14 +23,17 @@ export default function RegisterForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterForm>({ mode: 'onBlur' });
-  const onValid = (data: RegisterForm) => {
-    console.log('valid');
+
+  const [signUp, {loading, data, error}] = useMutation('/api/users/register');
+  const onValid = (validForm: RegisterForm) => {
+    console.log('working');
+    signUp(validForm);
   };
+  console.log(loading, data, error);
+
   const onInvalid = (errors: FieldErrors) => {
-    if (errors) {
-      console.log({ errors });
-    }
-    console.log('invalid');
+ 
+ 
   };
 
   return (
@@ -124,7 +128,7 @@ export default function RegisterForm() {
             {...register('password', {
               required: 'Please set your password.',
               pattern: {
-                value: RegExp('(?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}'),
+                value: RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/i),
                 message:
                   'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
               },
