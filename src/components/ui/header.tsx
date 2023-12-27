@@ -61,7 +61,7 @@ export default  function Header({loggedIn}:HeaderProps) {
             </div>
             <div className="absolute hidden group-focus:flex group-hover:flex group-active:absolute top-[100%] right-0 flex-col bg-white border px-3 py-2 border-gray-200 shadow-sm">
               <div className="px-3 py-2 border-b ">
-                <Link href={`/account/${user?.id}`} className='text-sm hover:text-purple-600'>Profile</Link>
+                <Link href={`/account/me`} className='text-sm hover:text-purple-600'>Profile</Link>
               </div>
               <div className="px-3 py-2">
                 <LogoutButton />

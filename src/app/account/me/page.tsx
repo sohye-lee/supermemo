@@ -3,7 +3,7 @@ import Container from '@/components/ui/container';
 import Hero from '@/components/ui/hero'
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
-import { notFound, useParams, useRouter } from 'next/navigation'
+import {  useRouter } from 'next/navigation'
 import { db } from 'prisma/db';
 import AccountImage from 'public/image/bg-gradient-2.jpg'
 import { useEffect, useState } from 'react';
