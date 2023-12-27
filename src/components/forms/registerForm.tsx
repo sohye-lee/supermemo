@@ -20,7 +20,7 @@ interface MutationResult {
   ok: boolean;
 }
 
-export default   function RegisterForm() {
+export default function RegisterForm() {
   const router = useRouter();
   const {
     register,
@@ -29,26 +29,33 @@ export default   function RegisterForm() {
     formState: { errors },
   } = useForm<RegisterForm>({ mode: 'onBlur' });
   const [serverError, setServerError] = useState('');
-  const [enter, {loading, data, error}] = useMutation<MutationResult>('/api/register');
+  const [enter, { loading, data, error }] =
+    useMutation<MutationResult>('/api/users');
+
   const onValid = async (validForm: RegisterForm) => {
-    // enter(validForm);
-    fetch('/api/register', {
-      headers: {
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify(validForm)
-    })
-    .then((res) => res.json())
-    .then((res) => router.push(`/account/${res.user.id}`))
-    .catch((err) => {
-      setServerError(err.message);
-    })
+    enter(validForm);
+    // await fetch('/api/users', {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   method: 'POST',
+    //   body: JSON.stringify(validForm),
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => router.push(`/account/${res.user.id}`))
+    //   .catch((err) => {
+    //     setServerError(err.message);
+    //   });
+    router.push(`/account/${data?.ok}`);
   };
- 
+
   return (
     <div className="p-8 bg-gray-100 rounded-sm flex flex-col items-center">
-      {serverError != "" && <ErrorMessage message={serverError} />}
+      {error && (
+        <div className="mb-3">
+          <ErrorMessage message={'error'} />
+        </div>
+      )}
       <form
         onSubmit={handleSubmit(onValid)}
         className="w-full flex flex-col gap-2"
@@ -58,8 +65,8 @@ export default   function RegisterForm() {
             {...register('name', {
               required: 'Username is required',
               minLength: {
-                message: 'The username should be longer than 5 chars.',
-                value: 5,
+                message: 'The username should be longer than 3 chars.',
+                value: 3,
               },
             })}
             type="text"
@@ -77,7 +84,7 @@ export default   function RegisterForm() {
               required: 'Email is required',
               validate: {
                 notEmail: (value) =>
-                   value.includes('@')  || 'Please enter a valid email.',
+                  value.includes('@') || 'Please enter a valid email.',
               },
             })}
             type="email"
@@ -93,7 +100,9 @@ export default   function RegisterForm() {
             {...register('password', {
               required: 'Please set your password.',
               pattern: {
-                value: RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/i),
+                value: RegExp(
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/i
+                ),
                 message:
                   'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
               },

@@ -8,9 +8,17 @@ import { FormEvent } from 'react';
 import GoogleButton from '../ui/googleButton';
 import { useForm } from 'react-hook-form';
 
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
 export default function LoginForm() {
   const router = useRouter();
-  const { register} = useForm();
+  const { register, handleSubmit} = useForm();
+  const onValid = (data: LoginForm) => {
+    console.log(data)
+  }
   // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   //   const formData = new FormData(e.currentTarget);
   //   const response = await signIn('credentials', {
