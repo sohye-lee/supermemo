@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import LogoutButton from './logout';
+
 interface HeaderProps {
   loggedIn: boolean;
 }
+
 export default function Header({ loggedIn }: HeaderProps) {
   return (
     <div className="fixed px-5 top-0 left-0 w-full z-10 scroll-m-4 flex items-center justify-between">
@@ -19,7 +21,6 @@ export default function Header({ loggedIn }: HeaderProps) {
         <Link href="/exams" className="text-sm">
           Exams
         </Link>
-        {/* <Link href="/tips">Tips</Link> */}
       </nav>
       <div>
         {loggedIn ? (

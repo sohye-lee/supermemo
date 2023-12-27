@@ -1,18 +1,18 @@
 // import withHandler from '@/app/lib/server/withHandler';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from 'prisma/db';
-import { hash } from 'bcrypt';
-import { ResponseType } from '@/app/lib/server/utils';
+import { genSaltSync, hash, hashSync } from 'bcrypt';
+import { ResponseType, hashPassword } from '@/app/lib/server/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(
   req: NextRequest,
   res: NextResponse<ResponseType>
-  //   req: NextApiRequest,
-  //   res: NextApiResponse<ResponseType>
+    // req: NextApiRequest,
+    // res: NextApiResponse<ResponseType>
 ) {
+
   const data = await req.json();
-  console.log(data);
   const { name, email, password } = data;
 
   const newPassword = await hash(password, 10);
@@ -39,7 +39,7 @@ export async function POST(
       message: 'Sorry, not successful.',
     });
   }
-  console.log(user);
+//   console.log(user);
 
   return NextResponse.json({
     ok: true,
@@ -48,25 +48,29 @@ export async function POST(
   });
 
   //   try {
-  //     const { name, email, password } = req.body;
-  //     const newPassword = await hash(password, 10);
-
-  //     const userExists = await db.user.findUnique({
-  //       where: {
-  //         email: email,
-  //       },
-  //     });
-  //     if (userExists) {
-  //       res.status(405).json({ ok: false });
-  //     }
-  //     const user = await db.user.create({
-  //       data: {
-  //         name,
-  //         email,
-  //         password: newPassword,
-  //       },
-  //     });
-  //     res.json({ ok: true, user });
+ 
+    //   const { name, email, password } = req.body;
+    //   const salt = genSaltSync(10);
+    // //   const newPassword = await hashPassword(password) || "";
+    //   const userExists = await db.user.findUnique({
+    //     where: {
+    //       email: email,
+    //     },
+    //   });
+    //   if (userExists) {
+    //     res.status(405).json({ ok: false, message: "already existss" });
+    //   }
+    //   if (!password) {
+    //     res.status(405).json({ok: false, message: "no pw"})
+    //   }
+    //   const user = await db.user.create({
+    //     data: {
+    //       name,
+    //       email,
+    //       password,
+    //     },
+    //   });
+    //   res.json({ ok: true, message: "success", user });
   //   } catch (error) {
   //     console.log(error);
   //     return res?.status(500).json({ ok: false, error });

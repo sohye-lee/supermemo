@@ -7,7 +7,8 @@ import GoogleButton from '../ui/googleButton';
 import { useForm } from 'react-hook-form';
 import ErrorMessage from './errorMessage';
 import useMutation from '@/app/lib/client/useMutation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { User } from '@prisma/client';
 
 interface RegisterForm {
   name?: string;
@@ -16,10 +17,12 @@ interface RegisterForm {
   confirmPassword: string;
 }
 
-interface MutationResult {
+interface RegisterResult {
   ok: boolean;
+  message: string;
+  user: User;
 }
-
+ 
 export default function RegisterForm() {
   const router = useRouter();
   const {
@@ -30,24 +33,17 @@ export default function RegisterForm() {
   } = useForm<RegisterForm>({ mode: 'onBlur' });
   const [serverError, setServerError] = useState('');
   const [enter, { loading, data, error }] =
-    useMutation<MutationResult>('/api/users');
+    useMutation<RegisterResult>('/api/users');
 
   const onValid = async (validForm: RegisterForm) => {
     enter(validForm);
-    // await fetch('/api/users', {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   method: 'POST',
-    //   body: JSON.stringify(validForm),
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => router.push(`/account/${res.user.id}`))
-    //   .catch((err) => {
-    //     setServerError(err.message);
-    //   });
-    router.push(`/account/${data?.ok}`);
   };
+
+  useEffect(() => {
+    if (data?.user) {
+      router.push(`/account/${data?.user?.id}`);
+    }
+  }, [data?.user])
 
   return (
     <div className="p-8 bg-gray-100 rounded-sm flex flex-col items-center">
@@ -56,6 +52,7 @@ export default function RegisterForm() {
           <ErrorMessage message={'error'} />
         </div>
       )}
+
       <form
         onSubmit={handleSubmit(onValid)}
         className="w-full flex flex-col gap-2"
