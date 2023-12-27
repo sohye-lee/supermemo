@@ -7,6 +7,7 @@ export default function LogoutButton() {
       onClick={() => {
         signOut();
       }}
+      className='text-sm hover:text-purple-600'
     >
       Logout
     </span>

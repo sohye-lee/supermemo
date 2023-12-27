@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/ui/header';
 import Footer from '@/components/ui/footer';
 import { getServerSession } from 'next-auth';
+import Provider from './provider';
 
 const inter = Inter({ subsets: ['latin'] });
 const epilog = Epilogue({ subsets: ['latin'] });
@@ -22,10 +23,15 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en">
+      <head>
+      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+      </head>
       <body className={`${roboto_mono.className} ${inter.className}`}>
-        <Header loggedIn={session ? true : false} />
+        <Provider>
+        <Header loggedIn={session ? true : false}   />
         <div className="min-h-screen bg-white py-14">{children}</div>
         <Footer />
+        </Provider>
       </body>
     </html>
   );

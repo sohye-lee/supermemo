@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { FormEvent } from 'react';
 import GoogleButton from '../ui/googleButton';
 import { useForm } from 'react-hook-form';
+import ErrorMessage from './errorMessage';
 
 interface LoginForm {
   email: string;
@@ -15,50 +16,66 @@ interface LoginForm {
 
 export default function LoginForm() {
   const router = useRouter();
-  const { register, handleSubmit} = useForm();
-  const onValid = (data: LoginForm) => {
-    console.log(data)
-  }
-  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  //   const formData = new FormData(e.currentTarget);
-  //   const response = await signIn('credentials', {
-  //     email: formData.get('email'),
-  //     password: formData.get('password'),
-  //     //   redirect: false,
-  //   });
-  //   // redirect('/');
-  //   if (!response?.error) {
-  //     console.log(response?.error);
-  //     router.push('/');
-  //     router.refresh();
-  //   } else {
-  //     router.push('/');
-  //   }
-  // };
+  const { register, handleSubmit,    formState: { errors },} = useForm<LoginForm>();
+  // const onValid = async (validForm: LoginForm) => {
+  //   console.log(validForm)
+  //   signIn( )
+  //   router.push('/');
+  // }
+  const onValid = async (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email');
+    console.log(email)
+    const response = await signIn('credentials', {
+      email: formData.get('email'),
+      password: formData.get('password'),
+      redirect: false,
+    });
+ 
+    console.log({ response });
+    if (!response?.error) {
+      router.push('/');
+      router.refresh();
+    }
+  };
 
   return (
     <div className="p-8 bg-gray-100 rounded-sm flex flex-col items-center">
       <form
-        // onSubmit={handleSubmit}
+        onSubmit={onValid}
         method="POST"
         className="w-full flex flex-col gap-2"
       >
-        <Input
-        {...register("email")}
-          label="Email"
-          type="input"
-          inputType="email"
-          id="email"
-          name="email"
-        />
-        <Input
-          label="Password"
-          type="input"
-          inputType="password"
-          id="password"
-          name="password"
-        />
-
+        <div className="w-full mb-2">
+          <input
+            {...register('email', {
+              required: 'Username is required',
+              minLength: {
+                message: 'The username should be longer than 3 chars.',
+                value: 3,
+              },
+            })}
+            type="email"
+            placeholder="Username"
+            className="rounded border border-gray-200 focus:outline-none focus:ring-0 w-full py-2 px-2 bg-white active:bg-white text-sm focus:bg-white focus:border-purple-400 focus:border-2"
+          />
+          {errors.email ? (
+            <ErrorMessage message={errors.email.message || ''} />
+          ) : null}
+        </div>
+        <div className="w-full mb-2">
+          <input
+            {...register('password', {
+              required: 'Password is required',
+ 
+            })}
+            type="password"
+            placeholder="Password"
+            className="rounded border border-gray-200 focus:outline-none focus:ring-0 w-full py-2 px-2 bg-white active:bg-white text-sm focus:bg-white focus:border-purple-400 focus:border-2"
+          />
+ 
+        </div>
         <Button size="medium" button={true} mode="black" addClass="mt-3">
           Login
         </Button>

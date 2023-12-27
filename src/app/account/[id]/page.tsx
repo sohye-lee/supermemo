@@ -1,18 +1,31 @@
+// 'use client';
+import Container from '@/components/ui/container';
 import Hero from '@/components/ui/hero'
-import { useParams } from 'next/navigation'
+import { useSession } from 'next-auth/react';
+import { notFound, useParams } from 'next/navigation'
 import { db } from 'prisma/db';
 import AccountImage from 'public/image/bg-gradient-2.jpg'
 
-export default async function AccountPage(props:any) {
-    const { id} = props.params
-    const user = await db.user.findUnique({
-        where: {
-            id 
-        }
+export default async function UserPage(props:any) {
+    const {params: {id}} = props;
+
+    const user = await fetch(`${process.env.NEXTAUTH_URL}/api/users/${props.params.id}`, { 
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
     })
+    .then((res) => res.json()).then((res) => res.user).catch(err => console.log(err));
+
+    // console.log(user2);
     return (
         <>
-        <Hero title={`Welcome Back, ${user?.name}`} alt="" img={AccountImage} description="" />
+        <Hero title={user?.name || ""} alt="" img={AccountImage} description="" />
+        <Container full={false} narrow={true}>
+            <div className="mb-3 flex items-center">
+                {user?.name}   
+            </div>
+        </Container>
         </>
     )
 }
