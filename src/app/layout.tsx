@@ -24,13 +24,16 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-      <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+          rel="stylesheet"
+        />
       </head>
       <body className={`${roboto_mono.className} ${inter.className}`}>
         <Provider>
-        <Header loggedIn={session ? true : false}   />
-        <div className="min-h-screen bg-white py-14">{children}</div>
-        <Footer />
+          <Header loggedIn={session ? true : false} />
+          <div className="min-h-screen bg-white pb-14">{children}</div>
+          <Footer />
         </Provider>
       </body>
     </html>

@@ -7,13 +7,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL") 
 }
 // user
 model Account {
   id                 String  @id @default(cuid())
   userId             String  @map("user_id")
-  type               String
+  type               String  @default("Member")
   provider           String
   providerAccountId  String  @map("provider_account_id")
   refresh_token      String? @db.Text
@@ -49,6 +49,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  exams         Exam[]
   createdAt DateTime @default(now())
 
   @@map("users")
@@ -76,7 +77,8 @@ model VerificationToken {
 
 model Category {
   id  Int @id @default(autoincrement())
-  name  String 
+  name  String
+  note  String? 
   exams Exam[]
   createdAt DateTime @default(now())
 }
@@ -89,6 +91,8 @@ model Exam {
   categoryId Int 
   category  Category @relation(fields: [categoryId], references: [id])
   questions Question[]
+  userId  String 
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
