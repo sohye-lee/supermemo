@@ -13,9 +13,8 @@ interface CategoryForm {
   name: string;
   note?: string;
 }
-export default function CategoryCreateForm() {
-  const [createCategory, { loading, data, error }] =
-    useMutation('/api/categories');
+export default function ExamCreateForm() {
+  const [createExam, { loading, data, error }] = useMutation('/api/exams');
   const router = useRouter();
   const {
     register,
@@ -26,7 +25,7 @@ export default function CategoryCreateForm() {
   const [needRefresh, setNeedRefresh] = useState(false);
 
   const onValid = (validForm: CategoryForm) => {
-    createCategory(validForm);
+    createExam(validForm);
   };
 
   useEffect(() => {
@@ -40,21 +39,21 @@ export default function CategoryCreateForm() {
       .then((data) => setCategories(data.categories));
   }, [setCategories, handleSubmit, needRefresh]);
 
-  const renderCategories = categories ? (
-    categories.map((c) => {
-      // return <Link key={c.id} href="/" className="py-2 px-3 bg-gray-100 w-full block rounded-sm hover:text-white hover:bg-gray-400 transition-all">{c.name}</Link>
-      return (
-        <ToggleItem
-          key={c.id}
-          category={c}
-          setNeedRefresh={setNeedRefresh}
-          needRefresh={needRefresh}
-        />
-      );
-    })
-  ) : (
-    <p className="text-sm text-center mt-8 text-gray-600">No category yet.</p>
-  );
+  // const renderCategories = categories ? (
+  //   categories.map((c) => {
+  //     // return <Link key={c.id} href="/" className="py-2 px-3 bg-gray-100 w-full block rounded-sm hover:text-white hover:bg-gray-400 transition-all">{c.name}</Link>
+  //     return (
+  //       <ToggleItem
+  //         key={c.id}
+  //         category={c}
+  //         setNeedRefresh={setNeedRefresh}
+  //         needRefresh={needRefresh}
+  //       />
+  //     );
+  //   })
+  // ) : (
+  //   <p className="text-sm text-center mt-8 text-gray-600">No category yet.</p>
+  // );
 
   return (
     <>
@@ -103,7 +102,7 @@ export default function CategoryCreateForm() {
           </div>
         </form>
       </div>
-      <div className="mt-8 pt-8 border-t ">{renderCategories}</div>
+      {/* <div className="mt-8 pt-8 border-t ">{renderCategories}</div> */}
     </>
   );
 }
