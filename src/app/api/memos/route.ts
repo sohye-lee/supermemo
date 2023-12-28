@@ -3,8 +3,9 @@ import { db } from 'prisma/db';
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const data = await req.json();
-  const { name, type, topic, categoryId, userId } = data;
+  const { name, type, topic, categoryId, userEmail } = data;
 
+  console.log('data I received: ', data)
   const newExam = await db.exam.create({
     data: {
       name,
@@ -12,12 +13,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
       topic,
       category: {
         connect: {
-          id: categoryId,
+          id: parseInt(categoryId),
         },
       },
       user: {
         connect: {
-          id: userId,
+          email: userEmail,
         },
       },
     },

@@ -49,7 +49,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  exams         Exam[]
+  exams         Memo[]
+  knows         Know[]
   createdAt DateTime @default(now())
 
   @@map("users")
@@ -69,14 +70,14 @@ model Category {
   id  Int @id @default(autoincrement())
   name  String
   note  String? 
-  exams Exam[]
+  exams Memo[]
   createdAt DateTime @default(now())
 }
 
-model Exam {
+model Memo {
   id  Int     @id @default(autoincrement())
   name  String 
-  type  String 
+  type String
   topic String?
   categoryId Int 
   category  Category @relation(fields: [categoryId], references: [id])
@@ -86,15 +87,18 @@ model Exam {
   createdAt DateTime @default(now())
 }
 
+
+
 model Question {
   id  Int @id @default(autoincrement())
   question  String
+  type  String
   liked Int @default(0)
-  know  Boolean @default(false)
   examId  Int 
-  exam  Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+  exam  Memo @relation(fields: [examId], references: [id], onDelete: Cascade)
   answers Answer[]
   createdAt DateTime @default(now())
+  knows Know[]
 }
 
 model Answer {
@@ -107,3 +111,11 @@ model Answer {
   createdAt DateTime @default(now())
 }
 
+model Know {
+  id Int @id @default(autoincrement())
+  know  Boolean @default(false)
+  userId String 
+  user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId Int 
+  question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}

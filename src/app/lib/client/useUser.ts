@@ -1,9 +1,10 @@
+import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 
 export default function useUser ( ) {
-    const [user, setUser] = useState();
+    const [user, setUser] = useState<User>();
     const router = useRouter();
 
     useEffect(() => {
