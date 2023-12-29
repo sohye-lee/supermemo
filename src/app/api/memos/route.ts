@@ -5,8 +5,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const data = await req.json();
   const { name, type, topic, categoryId, userEmail } = data;
 
-  console.log('data I received: ', data)
-  const newExam = await db.exam.create({
+  console.log('data I received: ', data);
+  const newMemo = await db.memo.create({
     data: {
       name,
       type,
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     },
   });
 
-  if (!newExam) {
+  if (!newMemo) {
     return NextResponse.json({
       ok: false,
       message: 'Something went wrong. Please retry.',
@@ -34,6 +34,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
   return NextResponse.json({
     ok: true,
     message: 'Success!',
-    exam: newExam,
+    memo: newMemo,
   });
 }

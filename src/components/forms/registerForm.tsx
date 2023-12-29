@@ -9,6 +9,7 @@ import ErrorMessage from './errorMessage';
 import useMutation from '@/app/lib/client/useMutation';
 import { useEffect, useState } from 'react';
 import { User } from '@prisma/client';
+import { signIn } from 'next-auth/react';
 
 interface RegisterForm {
   name?: string;
@@ -17,12 +18,18 @@ interface RegisterForm {
   confirmPassword: string;
 }
 
+interface ErrorProps {
+  message: string;
+  [key: string]: any;
+}
+
 interface RegisterResult {
   ok: boolean;
   message: string;
   user: User;
+  error?: ErrorProps;
 }
- 
+
 export default function RegisterForm() {
   const router = useRouter();
   const {
@@ -41,15 +48,20 @@ export default function RegisterForm() {
 
   useEffect(() => {
     if (data?.user) {
+      signIn();
       router.push(`/account/${data?.user?.id}`);
     }
-  }, [data?.user])
+
+    if (error) {
+      setServerError(JSON.stringify(error));
+    }
+  }, [data?.user]);
 
   return (
     <div className="p-8 bg-gray-100 rounded-sm flex flex-col items-center">
       {error && (
         <div className="mb-3">
-          <ErrorMessage message={'error'} />
+          <ErrorMessage message={serverError} />
         </div>
       )}
 

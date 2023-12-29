@@ -1,3 +1,4 @@
+import useUser from '@/app/lib/client/useUser';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
@@ -25,6 +26,7 @@ export async function GET(req: NextRequest, context: any) {
     });
   }
 
+  console.log(profile);
   return NextResponse.json({
     ok: true,
     message: 'your profile',

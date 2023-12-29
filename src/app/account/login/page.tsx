@@ -5,6 +5,7 @@ import LoginForm from '../../../components/forms/loginForm';
 import GradientImage from 'public/image/bg-gradient-2.jpg';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import FormLayout from '@/components/ui/formLayout';
 
 export default async function LoginPage() {
   const session = await getServerSession();
@@ -13,10 +14,9 @@ export default async function LoginPage() {
   }
   return (
     <>
-      {/* <Hero alt="" img={GradientImage} title="Welcome Back!" /> */}
-      <Container full={false} narrow={true}>
+      <FormLayout title="Welcome Back!">
         <LoginForm />
-      </Container>
+      </FormLayout>
     </>
   );
 }

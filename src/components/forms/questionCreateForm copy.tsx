@@ -22,10 +22,11 @@ interface MemoForm {
 interface MemoCreateFormProps {
   serverSession: Session | null;
 }
-export default function MemoCreateForm({ serverSession }: MemoCreateFormProps) {
+export default function QuestionCreateForm({
+  serverSession,
+}: MemoCreateFormProps) {
   const router = useRouter();
   const { data: session } = useSession();
-  // const { user } = useUser();
   console.log('serversession : ', serverSession);
   const [createMemo, { loading, data, error }] = useMutation('/api/memos');
 

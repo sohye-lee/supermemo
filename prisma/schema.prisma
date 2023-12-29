@@ -43,13 +43,13 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String   @unique
+  email         String   @unique 
   emailVerified DateTime? @map("email_verified")
   password      String
   image         String?
   accounts      Account[]
   sessions      Session[]
-  exams         Memo[]
+  memo         Memo[]
   knows         Know[]
   createdAt DateTime @default(now())
 
@@ -70,7 +70,7 @@ model Category {
   id  Int @id @default(autoincrement())
   name  String
   note  String? 
-  exams Memo[]
+  memos Memo[]
   createdAt DateTime @default(now())
 }
 
@@ -94,8 +94,8 @@ model Question {
   question  String
   type  String
   liked Int @default(0)
-  examId  Int 
-  exam  Memo @relation(fields: [examId], references: [id], onDelete: Cascade)
+  memoId  Int 
+  memo  Memo @relation(fields: [memoId], references: [id], onDelete: Cascade)
   answers Answer[]
   createdAt DateTime @default(now())
   knows Know[]

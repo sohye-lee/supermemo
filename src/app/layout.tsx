@@ -3,8 +3,9 @@ import { Inter, Epilogue, Roboto_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/ui/header';
 import Footer from '@/components/ui/footer';
-import { getServerSession } from 'next-auth';
+import { Session, getServerSession } from 'next-auth';
 import Provider from './provider';
+// import { useSession } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] });
 const epilog = Epilogue({ subsets: ['latin'] });
@@ -21,17 +22,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
+  console.log(session);
   return (
     <html lang="en">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-          rel="stylesheet"
-        />
-      </head>
       <body className={`${roboto_mono.className} ${inter.className}`}>
         <Provider>
-          <Header loggedIn={session ? true : false} />
+          <Header loggedIn={session ? true : false} session={session} />
           <div className="min-h-screen bg-white pb-14">{children}</div>
           <Footer />
         </Provider>
