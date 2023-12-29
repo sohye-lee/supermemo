@@ -14,7 +14,7 @@ export default async function LoginPage() {
   }
   return (
     <>
-      <FormLayout title="Welcome Back!">
+      <FormLayout wide="narrow" title="Welcome Back!">
         <LoginForm />
       </FormLayout>
     </>

@@ -49,8 +49,10 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  memo         Memo[]
+  memos         Memo[]
+  questions     Question[]
   knows         Know[]
+  likes         Like[]
   createdAt DateTime @default(now())
 
   @@map("users")
@@ -82,40 +84,51 @@ model Memo {
   categoryId Int 
   category  Category @relation(fields: [categoryId], references: [id])
   questions Question[]
+  likes Like[]
   userId  String 
   user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
-
-
 model Question {
   id  Int @id @default(autoincrement())
   question  String
-  type  String
-  liked Int @default(0)
+  image String?
+  answer  String
   memoId  Int 
   memo  Memo @relation(fields: [memoId], references: [id], onDelete: Cascade)
-  answers Answer[]
-  createdAt DateTime @default(now())
+  userId String 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   knows Know[]
+  createdAt DateTime @default(now())
+  // answers Answer[]
 }
 
-model Answer {
-  id  Int @id @default(autoincrement())
-  text  String 
-  right Boolean @default(false)
-  order Int @default(0)
-  questionId  Int
-  question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-}
+// model Answer {
+//   id  Int @id @default(autoincrement())
+//   text  String 
+//   right Boolean @default(false)
+//   order Int @default(0)
+//   questionId  Int
+//   question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+//   createdAt DateTime @default(now())
+// }
 
 model Know {
   id Int @id @default(autoincrement())
   know  Boolean @default(false)
+  save Boolean? @default(false)
   userId String 
   user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
   questionId Int 
   question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id Int @id @default(autoincrement())
+  memo  Memo @relation(fields: [memoId], references: [id], onDelete: Cascade)
+  memoId Int 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String 
+  createdAt DateTime @default(now())
 }

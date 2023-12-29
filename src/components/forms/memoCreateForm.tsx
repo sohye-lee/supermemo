@@ -26,7 +26,6 @@ export default function MemoCreateForm({ serverSession }: MemoCreateFormProps) {
   const router = useRouter();
   const { data: session } = useSession();
   // const { user } = useUser();
-  console.log('serversession : ', serverSession);
   const [createMemo, { loading, data, error }] = useMutation('/api/memos');
 
   const {
@@ -37,9 +36,7 @@ export default function MemoCreateForm({ serverSession }: MemoCreateFormProps) {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const onValid = (validForm: MemoForm) => {
-    console.log('this is what I am sending:', validForm);
     createMemo(validForm);
-    router.push('/memos/questions/new');
   };
 
   const onInvalid = () => {
@@ -78,10 +75,14 @@ export default function MemoCreateForm({ serverSession }: MemoCreateFormProps) {
       .then((res) => res.json())
       .then((data) => {
         setCategories(data.categories);
-        console.log(data);
       })
       .catch((err) => console.log(err));
-  }, [setCategories, session, router]);
+
+      if (data?.memo) {
+        router.push(`/memos/${data?.memo.id}/new`);
+      }
+   
+  }, [setCategories, session, router, data]);
 
   return (
     <>

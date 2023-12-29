@@ -7,7 +7,7 @@ import FormLayout from '@/components/ui/formLayout';
 export default async function RegisterPage() {
   return (
     <>
-      <FormLayout title="Sign Up">
+      <FormLayout wide="narrow" title="Sign Up">
         <RegisterForm />
       </FormLayout>
     </>

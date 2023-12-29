@@ -1,18 +1,17 @@
-import useUser from '@/app/lib/client/useUser';
-import { useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from 'prisma/db';
 
 export async function GET(req: NextRequest, context: any) {
-  const { data: session } = useSession();
-  if (!session) {
+  const serverSession = await getServerSession();
+  if (!serverSession?.user) {
     redirect('/account/login');
   }
 
   const profile = await db.user.findUnique({
     where: {
-      email: session?.user?.email!,
+      email: serverSession?.user?.email || ""
     },
     include: {
       accounts: true,
@@ -26,7 +25,6 @@ export async function GET(req: NextRequest, context: any) {
     });
   }
 
-  console.log(profile);
   return NextResponse.json({
     ok: true,
     message: 'your profile',

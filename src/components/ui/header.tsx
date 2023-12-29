@@ -19,14 +19,21 @@ export default function Header({ loggedIn, session }: HeaderProps) {
   const router = useRouter();
   const user = session?.user;
   const [openMobile, setOpenMobile] = useState<Boolean>(false);
+  const [openDrop, setOpenDrop] = useState<Boolean>(false);
+
   const onClick = () => {
     setOpenMobile(!openMobile);
-    console.log('clicked');
   };
+
+  const onDropClick = () => {
+    setOpenDrop(!openDrop);
+   
+  }
 
   useEffect(() => {
     if (openMobile) {
       setOpenMobile(false);
+      setOpenDrop(false);
     }
   }, [router]);
 
@@ -36,7 +43,6 @@ export default function Header({ loggedIn, session }: HeaderProps) {
         <div className="w-full flex items-center py-1 justify-between max-w-[1600px]">
           <Link href="/" className="min-w-36 w-36">
             <Image src={Logo} alt="" className="w-full" />
-            {/* <span className="text-lg font-semibold">SuperMemo</span> */}
           </Link>
 
           <nav className="items-center justify-center space-x-8 py-4 hidden md:flex ">
@@ -61,13 +67,16 @@ export default function Header({ loggedIn, session }: HeaderProps) {
             {loggedIn ? (
               <div
                 id="user"
-                className="group relative flex flex-col items-end   "
+                className="group relative flex flex-col items-end"
+                onClick={onDropClick}
               >
+                <input type="checkbox" className='hidden absolute top-1/2 right-1/2 w-full h-full'/>
                 <div className="flex flex-col items-center">
                   <div className="w-8 h-8 rounded-full border border-slate-300 bg-black "></div>
                   <p className="text-gray-800 text-[10px]">{user?.name}</p>
+                  
                 </div>
-                <div className="absolute hidden group-focus:flex group-hover:flex group-active:absolute top-[100%] right-0 flex-col bg-white border px-3 py-2 border-gray-200 shadow-sm">
+                <div className={`absolute   top-[115%] right-0 flex-col bg-white border px-3 py-2 border-gray-200 shadow-sm w-52 ${openDrop ? "flex": "hidden"} `}>
                   <div className="px-3 py-2 border-b ">
                     <Link
                       href={`/account/me`}

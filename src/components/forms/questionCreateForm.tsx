@@ -3,7 +3,7 @@ import useMutation from '@/app/lib/client/useMutation';
 import ErrorMessage from '@/components/forms/errorMessage';
 import Button from '@/components/ui/button';
 import { Category } from '@prisma/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSession } from 'next-auth/react';
@@ -11,42 +11,43 @@ import { MemoType, memoTypes } from '@/util/types';
 import Loading from '@/app/loading';
 import useUser from '@/app/lib/client/useUser';
 import { Session } from 'next-auth';
+import useSWR from 'swr';
 
-interface MemoForm {
-  name: string;
-  type: MemoType;
-  topic?: string;
-  userEmail: string;
-  categoryId: string;
+interface QuestionForm {
+  question: string;
+  image?: string;
+  answer: string;
+  memoId: string;
+  [key:string]: any;
 }
 interface MemoCreateFormProps {
   serverSession: Session | null;
 }
+ 
 export default function QuestionCreateForm({
   serverSession,
 }: MemoCreateFormProps) {
   const router = useRouter();
-  const { data: session } = useSession();
-  console.log('serversession : ', serverSession);
-  const [createMemo, { loading, data, error }] = useMutation('/api/memos');
+  const {user} = useUser();
+  const {id} = useParams();
+  const {data:myQuestions, error:myQuestionsError} = useSWR(`/api/memos/${id}/questions`);
+  const [createQuestion, { loading, data, error }] = useMutation(`/api/memos/${id}/questions`);
+  const [serverMessage, setServerMessage] = useState('');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<MemoForm>();
+  } = useForm<QuestionForm>();
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const onValid = (validForm: MemoForm) => {
-    console.log('this is what I am sending:', validForm);
-    createMemo(validForm);
-    router.push('/memos/questions/new');
+  const onValid = (validForm: QuestionForm) => {
+    validForm.append('userId', user?.id)
+    createQuestion(validForm);
+    // router.push('/memos/questions/new');
   };
 
-  const onInvalid = () => {
-    console.log('Form Invalid!');
-  };
-
+  
   const renderCategories =
     categories && categories.length > 0
       ? categories.map((category) => {
@@ -79,10 +80,9 @@ export default function QuestionCreateForm({
       .then((res) => res.json())
       .then((data) => {
         setCategories(data.categories);
-        console.log(data);
       })
       .catch((err) => console.log(err));
-  }, [setCategories, session, router]);
+  }, [setCategories, user, router]);
 
   return (
     <>
@@ -94,16 +94,16 @@ export default function QuestionCreateForm({
           </div>
         )}
         <form
-          onSubmit={handleSubmit(onValid, onInvalid)}
+          onSubmit={handleSubmit(onValid)}
           className="w-full flex flex-col gap-2"
         >
           <div className="w-full mb-2">
             <input
-              {...register('name', {
-                required: 'Name field is required',
+              {...register('title', {
+                required: 'You need title.',
                 minLength: {
-                  message: 'The category name should be longer than 3 chars.',
-                  value: 3,
+                  message: 'The category name should be longer than 5 chars.',
+                  value: 5,
                 },
               })}
               type="text"
@@ -111,7 +111,7 @@ export default function QuestionCreateForm({
               className="rounded border border-gray-200 focus:outline-none focus:ring-0 w-full py-2 px-2 bg-white active:bg-white text-sm focus:bg-white focus:border-purple-400 focus:border-2"
             />
             {errors.name ? (
-              <ErrorMessage message={errors.name.message || ''} />
+              <ErrorMessage message={errors?.title?.message?.toString() || ''} />
             ) : null}
           </div>
           <div className="w-full mb-2">
@@ -153,7 +153,6 @@ export default function QuestionCreateForm({
           </div>
           <input
             {...register('userEmail')}
-            onChange={(e) => console.log(e.currentTarget.value)}
             value={serverSession?.user?.email || ''}
             className="hidden"
           />

@@ -6,7 +6,7 @@ interface PageTitleProps {
 
 export default function PageTitle({title, addClass}:PageTitleProps) {
     return (
-        <h1 className={`text-xl font-semibold text-center ${addClass}`} style={{fontFamily: 'Inter, sans-serif'}}>
+        <h1 className={`text-2xl font-semibold text-center   ${addClass}`}>
             {title}
         </h1>
     )

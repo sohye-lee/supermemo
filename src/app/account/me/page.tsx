@@ -1,4 +1,5 @@
 'use client';
+import useUser from '@/app/lib/client/useUser';
 import Container from '@/components/ui/container';
 import Hero from '@/components/ui/hero';
 import { Account, Session, User } from '@prisma/client';
@@ -25,19 +26,26 @@ export default function AccountPage() {
     router.push('/account/login');
   }
   const [me, setMe] = useState<MeProps>();
+  const { user, isLoading } = useUser();
+  console.log(user);
 
   useEffect(() => {
-    fetch(`/api/users/${session?.user?.id!}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => res.user)
-      .then((user) => setMe(user))
-      .catch((err) => console.log(err));
-  }, [session?.user, session]);
+    if (user) {
+      setMe(user);
+    }
+  }, [])
+  // useEffect(() => {
+  //   fetch(`/api/users/${session?.user?.id!}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => res.user)
+  //     .then((user) => setMe(user))
+  //     .catch((err) => console.log(err));
+  // }, [session?.user, session]);
 
   return (
     <>
@@ -47,7 +55,7 @@ export default function AccountPage() {
         img={AccountImage}
         description=""
       />
-      <Container full={false} narrow={true}>
+      <Container wide="wide">
         <form action="" className="w-full flex flex-col gap-3">
           <div className="mb-3 flex items-center gap-3">
             <p className=" font-medium w-32 ">Username</p>

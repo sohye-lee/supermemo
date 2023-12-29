@@ -1,4 +1,5 @@
 // import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "prisma/db";
 
@@ -7,6 +8,7 @@ export async function POST (req: NextRequest, res: NextResponse<ResponseType>) {
     const { name, note } = data;
     console.log("data I got: ", data)
 
+    // const session = await getServerSession();
     // const {data: session} = useSession();
     // if (!data) {
     //     return NextResponse.json({

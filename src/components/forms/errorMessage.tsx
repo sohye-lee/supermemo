@@ -1,5 +1,5 @@
 interface MessageProps {
-  message: string;
+  message: string | null;
 }
 
 export default function ErrorMessage({ message }: MessageProps) {

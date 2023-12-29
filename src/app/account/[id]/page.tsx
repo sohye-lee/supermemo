@@ -21,7 +21,7 @@ export default async function UserPage(props:any) {
     return (
         <>
         <Hero title={user?.name || ""} alt="" img={AccountImage} description="" />
-        <Container full={false} narrow={true}>
+        <Container wide="narrow" narrow={true}>
             <div className="mb-3 flex items-center">
                 {user?.name}   
             </div>
