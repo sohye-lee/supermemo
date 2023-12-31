@@ -1,5 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter, Epilogue, Roboto_Mono, Lexend_Deca, Space_Grotesk } from 'next/font/google';
+import {
+  Inter,
+  Epilogue,
+  Roboto_Mono,
+  Lexend_Deca,
+  Space_Grotesk,
+} from 'next/font/google';
 import './globals.css';
 import Header from '@/components/ui/header';
 import Footer from '@/components/ui/footer';
@@ -8,6 +14,7 @@ import Provider from './provider';
 // import { useSession } from 'next-auth/react';
 import { SWRConfig } from 'swr';
 import { SWRProvider } from './swr-provider';
+import useUser from './lib/client/useUser';
 
 const inter = Inter({ subsets: ['latin'] });
 const epilog = Epilogue({ subsets: ['latin'] });
@@ -25,16 +32,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
-  console.log(session);
+  console.log('server session', session);
+
   return (
     <html lang="en">
       <body className={`${roboto_mono.className} ${space_grotesk.className}`}>
         <Provider>
-            <Header loggedIn={session ? true : false} session={session} />
-            <SWRProvider>
-              <div className="min-h-screen bg-white pb-14">{children}</div>
-            </SWRProvider>
-            <Footer />
+          <Header loggedIn={session ? true : false} session={session} />
+          <SWRProvider>
+            <div className="min-h-screen bg-white pb-14">{children}</div>
+          </SWRProvider>
+          <Footer />
         </Provider>
       </body>
     </html>

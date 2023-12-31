@@ -10,7 +10,7 @@ import { useSession } from 'next-auth/react';
 import { MemoType, memoTypes } from '@/util/types';
 import Loading from '@/app/loading';
 import useUser from '@/app/lib/client/useUser';
-import { Session } from 'next-auth';
+import { Session, getServerSession } from 'next-auth';
 
 interface MemoForm {
   name: string;
@@ -24,8 +24,13 @@ interface MemoCreateFormProps {
 }
 export default function MemoCreateForm({ serverSession }: MemoCreateFormProps) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: usesession } = useSession();
   // const { user } = useUser();
+  // console.log(serverSession?.user);
+
+  // console.log(session?.user?.email);
+  console.log('server session to children', serverSession);
+
   const [createMemo, { loading, data, error }] = useMutation('/api/memos');
 
   const {
@@ -78,11 +83,10 @@ export default function MemoCreateForm({ serverSession }: MemoCreateFormProps) {
       })
       .catch((err) => console.log(err));
 
-      if (data?.memo) {
-        router.push(`/memos/${data?.memo.id}/new`);
-      }
-   
-  }, [setCategories, session, router, data]);
+    if (data?.memo) {
+      router.push(`/memos/${data?.memo.id}/questions`);
+    }
+  }, [setCategories, router, data]);
 
   return (
     <>
@@ -90,7 +94,7 @@ export default function MemoCreateForm({ serverSession }: MemoCreateFormProps) {
       <div className="p-6 bg-gray-100 rounded-sm flex flex-col items-center ">
         {error && (
           <div className="mb-3">
-            <ErrorMessage message={'error'} />
+            <ErrorMessage message="Something went wrong." />
           </div>
         )}
         <form

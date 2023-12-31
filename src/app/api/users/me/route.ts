@@ -5,16 +5,14 @@ import { db } from 'prisma/db';
 
 export async function GET(req: NextRequest, context: any) {
   const serverSession = await getServerSession();
+
   if (!serverSession?.user) {
     redirect('/account/login');
   }
 
   const profile = await db.user.findUnique({
     where: {
-      email: serverSession?.user?.email || ""
-    },
-    include: {
-      accounts: true,
+      email: serverSession?.user?.email || '',
     },
   });
 
@@ -27,7 +25,7 @@ export async function GET(req: NextRequest, context: any) {
 
   return NextResponse.json({
     ok: true,
-    message: 'your profile',
+    message: 'Your profile loaded surccessfully!',
     profile,
   });
 }
