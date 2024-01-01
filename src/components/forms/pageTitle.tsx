@@ -6,8 +6,11 @@ interface PageTitleProps {
 
 export default function PageTitle({ title, addClass }: PageTitleProps) {
   return (
-    <h1 className={`text-2xl font-semibold text-center ${addClass}`}>
-      {title}
-    </h1>
+    <h1
+      className={`text-2xl font-semibold text-center ${addClass}`}
+      dangerouslySetInnerHTML={{ __html: title }}
+    />
+    //   {title}
+    // </h1>
   );
 }

@@ -1,14 +1,12 @@
 import { useForm } from 'react-hook-form';
 import ErrorMessage from './errorMessage';
-import { Session } from 'next-auth';
 import Button from '../ui/button';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import useMutation from '@/app/lib/client/useMutation';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Question } from '@prisma/client';
 
-interface QuestionForm {
+interface QuestionEditForm {
   question: string;
   image?: string;
   answer: string;
@@ -17,7 +15,6 @@ interface QuestionForm {
 }
 
 interface QuestionEditItemProps {
-  // serverSession: Session | null;
   memoId: string;
   userEmail: string;
   questionId: number;
@@ -29,13 +26,12 @@ export default function QuestionEditItem({
   userEmail,
   questionId,
 }: QuestionEditItemProps) {
-  // const { questionId } = useParams();
   const {
-    handleSubmit,
     register,
     formState: { errors },
-  } = useForm<QuestionForm>();
+  } = useForm<QuestionEditForm>();
 
+  const router = useRouter();
   const [question, setQuestion] = useState<Question>();
   const [formdata, setFormdata] = useState({
     question: question?.question,
@@ -44,7 +40,15 @@ export default function QuestionEditItem({
     memoId,
     userEmail,
   });
-  console.log('initial question:', question);
+
+  const deleteForm = async (questionId: number) => {
+    await fetch(`/api/memos/${memoId}/questions/${questionId}`, {
+      method: 'DELETE',
+    })
+      .then((res) => res.json())
+      .then((res) => router.refresh())
+      .catch((err) => console.log('ERROR while DELETING: ', err));
+  };
 
   const editForm = async () => {
     await fetch(`/api/memos/${memoId}/questions/${questionId}`, {
@@ -55,7 +59,7 @@ export default function QuestionEditItem({
       body: JSON.stringify(formdata),
     })
       .then((res) => res.json())
-      .then((res) => console.log('successful'))
+      .then((res) => router.refresh())
       .catch((err) => console.log(err));
   };
 
@@ -64,6 +68,12 @@ export default function QuestionEditItem({
       .then((res) => res.json())
       .then((data) => {
         setQuestion(data.question);
+        setFormdata({
+          ...formdata,
+          question: data.question.question,
+          answer: data.question.answer,
+          image: data.question.image,
+        });
       })
       .catch((err) => console.log(err));
   }, [setQuestion, questionId, memoId, setFormdata]);
@@ -76,20 +86,16 @@ export default function QuestionEditItem({
         <textarea
           {...register('question', {
             required: 'Please enter a question.',
-            minLength: {
-              message: 'The question should be longer than 5 chars.',
-              value: 5,
-            },
           })}
           onChange={(e) =>
             setFormdata({ ...formdata, question: e.currentTarget.value })
           }
-          value={question?.question}
+          value={formdata?.question}
           placeholder="Question"
           rows={4}
           className="rounded border border-gray-200 focus:outline-none focus:ring-0 w-full py-2 px-2 bg-white active:bg-white text-sm focus:bg-white focus:border-purple-400 focus:border-2"
         ></textarea>
-        {errors.name ? (
+        {errors.question ? (
           <ErrorMessage message={errors.question?.message || ''} />
         ) : null}
       </div>
@@ -101,12 +107,12 @@ export default function QuestionEditItem({
           onChange={(e) =>
             setFormdata({ ...formdata, answer: e.currentTarget.value })
           }
-          value={question?.answer}
+          value={formdata?.answer}
           placeholder="Answer"
           rows={4}
           className="rounded border border-gray-200 focus:outline-none focus:ring-0 w-full py-2 px-2 bg-white active:bg-white text-sm focus:bg-white focus:border-purple-400 focus:border-2"
         ></textarea>
-        {errors.name ? (
+        {errors.answer ? (
           <ErrorMessage message={errors.answer?.message || ''} />
         ) : null}
       </div>
@@ -115,7 +121,14 @@ export default function QuestionEditItem({
         <Button size="small" button={true} mode="save" addClass="p-0 h-12">
           <IconEdit size={24} />
         </Button>
-        <Button size="small" button={true} mode="danger" addClass="p-0 h-12">
+        <Button
+          size="small"
+          button={true}
+          mode="danger"
+          addClass="p-0 h-12"
+          type="button"
+          onClick={() => deleteForm(questionId)}
+        >
           <IconTrash size={20} />
         </Button>
       </div>

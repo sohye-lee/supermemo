@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form';
 import ErrorMessage from './errorMessage';
-import { Session } from 'next-auth';
 import Button from '../ui/button';
-import { IconCheck, IconTrash, IconEdit } from '@tabler/icons-react';
+import { IconCheck, IconTrash, IconReload } from '@tabler/icons-react';
 import useMutation from '@/app/lib/client/useMutation';
+import { useRouter } from 'next/navigation';
 
-interface QuestionForm {
+interface QuestionCreateForm {
   question: string;
   image?: string;
   answer: string;
@@ -14,27 +14,31 @@ interface QuestionForm {
 }
 
 interface QuestionCreateItemProps {
-  // serverSession: Session | null;
   memoId: string;
   userEmail: string;
+  setOpenForm: any;
   [key: string]: any;
 }
 
 export default function QuestionCreateItem({
   memoId,
   userEmail,
+  setOpenForm,
 }: QuestionCreateItemProps) {
+  const router = useRouter();
   const {
     handleSubmit,
     register,
+    resetField,
     formState: { errors },
-  } = useForm<QuestionForm>();
-  const [createQuestion, { loading, data, error }] = useMutation<QuestionForm>(
-    `/api/memos/${memoId}/questions`
-  );
+  } = useForm<QuestionCreateForm>();
+  const [createQuestion, { loading, data, error }] =
+    useMutation<QuestionCreateForm>(`/api/memos/${memoId}/questions`);
 
-  const onValid = (validForm: QuestionForm) => {
+  const onValid = (validForm: QuestionCreateForm) => {
     createQuestion(validForm);
+    router.refresh();
+    setOpenForm(false);
   };
 
   return (
@@ -51,10 +55,11 @@ export default function QuestionCreateItem({
               value: 5,
             },
           })}
+          // defaultValue="Question"
           placeholder="Question"
           className="rounded border border-gray-200 focus:outline-none focus:ring-0 w-full py-2 px-2 bg-white active:bg-white text-sm focus:bg-white focus:border-purple-400 focus:border-2"
         ></textarea>
-        {errors.name ? (
+        {errors.question ? (
           <ErrorMessage message={errors.question?.message || ''} />
         ) : null}
       </div>
@@ -63,10 +68,11 @@ export default function QuestionCreateItem({
           {...register('answer', {
             required: 'Please enter an answer.',
           })}
+          // defaultValue="Answer"
           placeholder="Answer"
           className="rounded border border-gray-200 focus:outline-none focus:ring-0 w-full py-2 px-2 bg-white active:bg-white text-sm focus:bg-white focus:border-purple-400 focus:border-2"
         ></textarea>
-        {errors.name ? (
+        {errors.answer ? (
           <ErrorMessage message={errors.answer?.message || ''} />
         ) : null}
       </div>
@@ -81,8 +87,15 @@ export default function QuestionCreateItem({
         <Button size="small" button={true} mode="success" addClass="p-0 h-12">
           <IconCheck size={24} />
         </Button>
-        <Button size="small" button={true} mode="danger" addClass="p-0 h-12">
-          <IconTrash size={20} />
+        <Button
+          size="small"
+          button={false}
+          mode="neutral"
+          addClass="p-0 h-12 bg-gray-200 flex items-center"
+          onClick={resetField}
+          href="#"
+        >
+          <IconReload size={20} />
         </Button>
       </div>
     </form>

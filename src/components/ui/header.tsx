@@ -14,12 +14,13 @@ interface HeaderProps {
   session?: Session | null;
 }
 
-export default function Header({ loggedIn, session }: HeaderProps) {
-  // const { data: session } = useSession();
+export default function Header({ loggedIn }: HeaderProps) {
+  const { data: session } = useSession();
   const router = useRouter();
   const user = session?.user;
   const [openMobile, setOpenMobile] = useState<Boolean>(false);
   const [openDrop, setOpenDrop] = useState<Boolean>(false);
+  const [userId, setUserId] = useState('');
 
   const onClick = () => {
     setOpenMobile(!openMobile);
@@ -33,6 +34,10 @@ export default function Header({ loggedIn, session }: HeaderProps) {
     if (openMobile) {
       setOpenMobile(false);
       setOpenDrop(false);
+    }
+
+    if (user) {
+      setUserId(user?.id);
     }
   }, [router]);
 
@@ -92,10 +97,10 @@ export default function Header({ loggedIn, session }: HeaderProps) {
                   </div>
                   <div className="px-3 py-2 border-b ">
                     <Link
-                      href={`/account/questions`}
+                      href={`/account/memos`}
                       className="text-sm hover:text-purple-600"
                     >
-                      My Questions
+                      My Memos
                     </Link>
                   </div>
                   <div className="px-3 py-2">

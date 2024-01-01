@@ -31,3 +31,22 @@ select:-webkit-autofill:focus {
   background-color: purple;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+#hero {
+  background: linear-gradient(-45deg, #7152ee, #8c3ce7, #2367d5, #3b2199);
+  background-size: 3000px 1000px;
+  animation: movingGradient 10s ease infinite;
+  /* background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); */
+}
+
+@keyframes movingGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

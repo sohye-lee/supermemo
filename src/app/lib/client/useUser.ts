@@ -11,7 +11,6 @@ export default function useUser() {
   //   fetcher
   // );
   const [user, setUser] = useState<User>();
-  console.log('SWR use User: ', user);
 
   useEffect(() => {
     fetch('/api/users/me')

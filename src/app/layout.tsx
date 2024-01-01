@@ -32,7 +32,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
-  console.log('server session', session);
 
   return (
     <html lang="en">
