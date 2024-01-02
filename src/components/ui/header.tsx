@@ -133,9 +133,9 @@ export default function Header({ loggedIn }: HeaderProps) {
           >
             <Link
               href="/memos/new"
-              className="h-10 w-10  z-50 bg-purple-600 rounded-full flex items-center justify-center shadow-md shadow-slate-400 hover:shadow-none transition hover:bg-purple-700"
+              className="h-8 w-8 z-50 bg-purple-400 rounded-full border border-slate-800 flex items-center justify-center shadow-md shadow-slate-400 hover:shadow-none transition hover:bg-purple-300"
             >
-              <IconPlus size={18} color="white" />
+              <IconPlus size={18} />
             </Link>
             <div className=" relative flex flex-col items-end  ">
               <button
@@ -175,6 +175,14 @@ export default function Header({ loggedIn }: HeaderProps) {
                     className="text-sm hover:text-purple-600"
                   >
                     Profile
+                  </Link>
+                </div>
+                <div className="  py-2  ">
+                  <Link
+                    href="/account/memos/"
+                    className="text-sm hover:text-purple-600"
+                  >
+                    My Memos
                   </Link>
                 </div>
                 <div className=" py-2">

@@ -1,0 +1,24 @@
+.card {
+  transform-style: preserve-3d;
+  transition: transform 1000ms;
+}
+
+/* .card:hover, */
+.card.active {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+/* 
+.card-front pre,
+.card-back pre {
+  font-family: 'Space Grotesk', sans-serif !important;
+} */
+
+.card-back {
+  transform: rotateY(180deg);
+}

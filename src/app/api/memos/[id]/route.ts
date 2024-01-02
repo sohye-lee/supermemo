@@ -16,6 +16,12 @@ export async function GET(req: NextRequest, context: any) {
     },
     include: {
       category: true,
+      questions: {
+        include: {
+          knows: true,
+        },
+      },
+      likes: true,
     },
   });
 
