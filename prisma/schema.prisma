@@ -116,8 +116,8 @@ model Question {
 
 model Know {
   id Int @id @default(autoincrement())
-  know  Boolean @default(false)
-  save Boolean? @default(false)
+  // know  Boolean @default(false)
+  // save Boolean? @default(false)
   userId String 
   user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
   questionId Int 

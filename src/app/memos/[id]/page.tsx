@@ -30,6 +30,7 @@ export default function MemoPage(props: any) {
   const [memo, setMemo] = useState<MemoProps>();
   const [index, setIndex] = useState(0);
   const { data: session } = useSession();
+  const [flipped, setFlipped] = useState(false);
 
   const renderQuestions =
     memo && memo.questions.length > 0
@@ -40,15 +41,20 @@ export default function MemoPage(props: any) {
 
   const renderCurrentQuestion =
     memo && memo.questions.length > 0 ? (
-      <Card question={memo.questions[index]} />
+      <Card
+        question={memo.questions[index]}
+        setIndex={setIndex}
+        setFlipped={setFlipped}
+        flipped={flipped}
+      />
     ) : null;
-  // memo.questions[index]
 
   const goLeft = () => {
     if (index == 0) {
       return null;
     }
     setIndex(index - 1);
+    setFlipped(false);
   };
 
   const goRight = () => {
@@ -56,6 +62,7 @@ export default function MemoPage(props: any) {
       return null;
     }
     setIndex(index + 1);
+    setFlipped(false);
   };
 
   useEffect(() => {
@@ -81,8 +88,7 @@ export default function MemoPage(props: any) {
             </div>
             <div className="p-sm px-3 py-1 rounded-[50px] border border-purple-600 text-purple-600 flex gap-2 items-center">
               <IconFlagQuestion size={12} />
-              Don&apos;t Know
-              {/* (
+              Don&apos;t Know (
               {
                 memo?.questions.filter((q) =>
                   q.knows.filter(
@@ -90,7 +96,7 @@ export default function MemoPage(props: any) {
                   )
                 ).length
               }
-              ) */}
+              )
             </div>
           </div>
           {renderCurrentQuestion}
