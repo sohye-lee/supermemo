@@ -1,12 +1,16 @@
-import { Question } from '@prisma/client';
+import { Know, Question } from '@prisma/client';
 import './card.css';
 import { useEffect, useState } from 'react';
 import { IconCheck, IconFlagQuestion } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import ServerMessage from '../forms/serverMessage';
 
+interface QuestionWithKnows extends Question {
+  knows: Know[];
+}
+
 interface CardProps {
-  question: Question;
+  question: QuestionWithKnows;
   [key: string]: any;
 }
 export default function Card({
@@ -18,6 +22,7 @@ export default function Card({
   const { data: session } = useSession();
   // const [flipped, setFlipped] = useState(false);
   const [know, setKnow] = useState(false);
+  const [show, setShow] = useState(false);
   const [message, setMessage] = useState('');
 
   const handleKnow = async () => {
@@ -69,7 +74,13 @@ export default function Card({
       .then((res) => res.json())
       .then((data) => data.know && setKnow(true));
     // .catch((err) => setMessage(err.message));
-  }, [setMessage, setKnow, handleKnow, setIndex]);
+    if (message) {
+      setTimeout(() => {
+        setShow(true);
+      }, 500);
+    }
+    setShow(false);
+  }, [setMessage, setKnow, setIndex, question]);
 
   return (
     <div className="relative">
@@ -105,7 +116,9 @@ export default function Card({
         {message ? (
           <ServerMessage mode="save" message={message} addClass="mb-2" />
         ) : null}
-        {know ? (
+        {know &&
+        question.knows.filter((k) => k.userId == session?.user.id).length >
+          0 ? (
           <div className="flex items-center  gap-2">
             <div className="w-6 h-6 rounded-full flex items-center justify-center border border-green-600 hover:bg-green-300">
               <IconCheck size="12" color="rgb(22 163 74)" />
