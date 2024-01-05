@@ -74,12 +74,15 @@ export default function Card({
       .then((res) => res.json())
       .then((data) => data.know && setKnow(true));
     // .catch((err) => setMessage(err.message));
-    if (message) {
-      setTimeout(() => {
-        setShow(true);
-      }, 500);
-    }
-    setShow(false);
+
+    const timeId = setTimeout(() => {
+      // After 3 seconds set the show value to false
+      setShow(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timeId);
+    };
   }, [setMessage, setKnow, setIndex, question]);
 
   return (
@@ -99,7 +102,7 @@ export default function Card({
             </pre>
           </div>
         </div>
-        <div className="card-front text-[14px] w-full bg-gray-100 border py-8 px-5 shadow-lg  z-20 min-h-full h-auto absolute top-0 left-0">
+        <div className="card-front text-[14px] w-full bg-gray-100 border py-8 px-5 shadow-lg  z-20 h-full absolute top-0 left-0">
           <div className="h-full w-full overflow-y-auto">
             <pre className="w-full text-wrap h-full">
               <span style={{ fontFamily: 'Space Grotesk' }}>
@@ -113,7 +116,7 @@ export default function Card({
         className="absolute bottom-3 right-4 z-30 cursor-pointer"
         onClick={handleKnow}
       >
-        {message ? (
+        {message && show ? (
           <ServerMessage mode="save" message={message} addClass="mb-2" />
         ) : null}
         {know &&

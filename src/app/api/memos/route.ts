@@ -37,3 +37,26 @@ export async function POST(req: NextRequest, res: NextResponse) {
     memo: newMemo,
   });
 }
+
+export async function GET(req: NextRequest) {
+  const memos = await db.memo.findMany({
+    include: {
+      likes: true,
+      questions: true,
+      category: true,
+    },
+  });
+
+  if (!memos) {
+    return NextResponse.json({
+      ok: false,
+      message: 'Not Found.',
+    });
+  }
+
+  return NextResponse.json({
+    ok: true,
+    message: 'Successful.',
+    memos,
+  });
+}

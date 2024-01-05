@@ -22,7 +22,7 @@ export default function MyMemosPage() {
   console.log('userId ', userId);
   const renderMemos = memos ? (
     memos.map((memo: MemoProps) => {
-      return <MemoItem memo={memo} />;
+      return <MemoItem memo={memo} key={memo.id} />;
     })
   ) : (
     <p className="text-gray-600 text-sm text-center w-full bg-gray-100 py-2 px-3">
