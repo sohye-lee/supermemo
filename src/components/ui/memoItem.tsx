@@ -1,12 +1,7 @@
 'use client';
-import Container from '@/components/ui/container';
-import Hero from '@/components/ui/hero';
 import Tag from '@/components/ui/tag';
 import { Category, Like, Memo, Question } from '@prisma/client';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
 import { IconHeart, IconClipboardText } from '@tabler/icons-react';
-import useSWR from 'swr';
 import Link from 'next/link';
 
 interface MemoProps extends Memo {

@@ -44,6 +44,7 @@ export async function GET(req: NextRequest) {
       likes: true,
       questions: true,
       category: true,
+      user: true,
     },
   });
 

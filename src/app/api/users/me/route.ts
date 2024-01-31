@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, context: any) {
     redirect('/account/login');
   }
 
-  const profile = await db.user.findUnique({
+  const profile = await db.user.findFirst({
     where: {
       email: serverSession?.user?.email || '',
     },

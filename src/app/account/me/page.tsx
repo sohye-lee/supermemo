@@ -22,7 +22,7 @@ export default function AccountPage() {
     if (!session?.user) {
       router.push('/account/login');
     }
-  }, [setMe]);
+  }, [me?.id, router, session?.user, setMe]);
 
   return (
     <>
